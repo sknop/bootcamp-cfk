@@ -1,0 +1,54 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: KafkaTopic
+metadata:
+  name: customer
+  namespace: confluent
+spec:
+  replicas: 3
+  partitionCount: 6
+  configs:
+    cleanup.policy: "delete"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-client
+  labels:
+    app: kafka-client
+spec:
+  clusterIP: None
+  selector:
+    app: kafka-client
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka-client
+  namespace: confluent
+spec:
+  serviceName: kafka-client
+  podManagementPolicy: Parallel
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-client
+  template:
+    metadata:
+      labels:
+        app: kafka-client
+    spec:
+      containers:
+        - name: kafka-client
+          image: confluentinc/cp-kafka:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+               sleep infinity
+      resources:
+        requests:
+          memory: 512Mi # 768Mi
+          cpu: 500m # 1000m
+
+---
+# Connect to kafka.confluent.svc.cluster.local:9092
