@@ -1,0 +1,141 @@
+#apiVersion: cert-manager.io/v1
+#kind: Issuer
+#metadata:
+#  name: bootcamp-issuer
+#  namespace: confluent
+#spec:
+#  selfSigned: {}
+#---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kraft-cert
+  namespace: confluent
+spec:
+  commonName: kraft
+  dnsNames:
+    - kraft
+    - kraft.confluent
+    - kraft.confluent.svc.cluster.local
+    - '*.confluent.svc.cluster.local'
+    - '*.kraft.confluent.svc.cluster.local'
+  issuerRef:
+    kind: ClusterIssuer
+    name: bootcamp-issuer
+  secretName: kraft-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kafka-cert
+  namespace: confluent
+spec:
+  commonName: kafka
+  dnsNames:
+    - kafka
+    - kafka.confluent
+    - kafka.confluent.svc.cluster.local
+    - '*.confluent.svc.cluster.local'
+    - '*.kafka.confluent.svc.cluster.local'
+    - '*.kafka.confluent.svc.cluster.local'
+  issuerRef:
+    kind: ClusterIssuer
+    name: bootcamp-issuer
+  secretName: kafka-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: c3-cert
+  namespace: confluent
+spec:
+  commonName: controlcenter
+  dnsNames:
+    - controlcenter
+    - controlcenter.confluent
+    - controlcenter.confluent.svc.cluster.local
+    - '*.confluent.svc.cluster.local'
+    - '*.controlcenter.confluent.svc.cluster.local'
+    - docker
+  issuerRef:
+    kind: ClusterIssuer
+    name: bootcamp-issuer
+  secretName: controlcenter-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ksqldb-cert
+  namespace: confluent
+spec:
+  commonName: ksqldb
+  dnsNames:
+    - ksqldb
+    - ksqldb.confluent
+    - ksqldb.confluent.svc.cluster.local
+    - '*.confluent.svc.cluster.local'
+    - '*.ksqldb.confluent.svc.cluster.local'
+  issuerRef:
+    kind: ClusterIssuer
+    name: bootcamp-issuer
+  secretName: ksqldb-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sr-cert
+  namespace: confluent
+spec:
+  commonName: schemaregistry
+  dnsNames:
+    - schemaregistry
+    - schemaregistry.confluent
+    - schemaregistry.confluent.svc.cluster.local
+    - '*.confluent.svc.cluster.local'
+    - '*.schemaregistry.confluent.svc.cluster.local'
+  issuerRef:
+    kind: ClusterIssuer
+    name: bootcamp-issuer
+  secretName: schemaregistry-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: connect-cert
+  namespace: confluent
+spec:
+  commonName: connect
+  dnsNames:
+    - connect
+    - connect.confluent
+    - connect.confluent.svc.cluster.local
+    - '*.confluent.svc.cluster.local'
+    - '*.connect.confluent.svc.cluster.local'
+  issuerRef:
+    kind: ClusterIssuer
+    name: bootcamp-issuer
+  secretName: connect-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
