@@ -1,1 +1,3 @@
 confluent-for-kubernetes/
+.idea/
+*.iml
