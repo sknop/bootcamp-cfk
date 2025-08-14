@@ -77,6 +77,10 @@ spec:
     application: confluentinc/cp-enterprise-control-center-next-gen:2.2.0
     init: confluentinc/confluent-init-container:3.0.0
   dataVolumeCapacity: 10Gi
+#  configOverrides:
+#    server:
+#      - confluent.controlcenter.cmf.url="https://cmf-service.confluent.svc.cluster.local"
+#      - confluent.controlcenter.cmf.enable=true
   dependencies:
     schemaRegistry:
       url: https://schemaregistry.confluent.svc.cluster.local:8081
