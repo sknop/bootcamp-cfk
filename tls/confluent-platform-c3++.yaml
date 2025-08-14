@@ -34,6 +34,10 @@ spec:
       url: http://controlcenter.confluent.svc.cluster.local:9090
   tls:
     secretRef: kafka-tls
+  listeners:
+    external:
+      tls:
+        enabled: true
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: Connect
