@@ -14,6 +14,14 @@ spec:
       url: http://controlcenter.confluent.svc.cluster.local:9090
   tls:
     secretRef: kraft-tls
+  listeners:
+    controller:
+      tls:
+        enabled: true
+      authentication:
+        type: mtls
+        principalMappingRules:
+          - RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: Kafka
@@ -30,14 +38,30 @@ spec:
     kRaftController:
       clusterRef:
         name: kraftcontroller
+      controllerListener:
+        tls:
+          enabled: true
+        authentication:
+          type: mtls
     metricsClient:
       url: http://controlcenter.confluent.svc.cluster.local:9090
   tls:
     secretRef: kafka-tls
   listeners:
+    internal:
+      tls:
+        enabled: true
+      authentication:
+        type: mtls
+        principalMappingRules:
+          - RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/
     external:
       tls:
         enabled: true
+      authentication:
+        type: mtls
+        principalMappingRules:
+          - RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: Connect

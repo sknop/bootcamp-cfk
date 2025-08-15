@@ -12,13 +12,13 @@ metadata:
   name: kraft-cert
   namespace: confluent
 spec:
-  commonName: kraft
+  commonName: kraftcontroller
   dnsNames:
-    - kraft
-    - kraft.confluent
-    - kraft.confluent.svc.cluster.local
+    - kraftcontroller
+    - kraftcontroller.confluent
+    - kraftcontroller.confluent.svc.cluster.local
     - '*.confluent.svc.cluster.local'
-    - '*.kraft.confluent.svc.cluster.local'
+    - '*.kraftcontroller.confluent.svc.cluster.local'
   issuerRef:
     kind: ClusterIssuer
     name: bootcamp-issuer
@@ -135,6 +135,38 @@ spec:
     kind: ClusterIssuer
     name: bootcamp-issuer
   secretName: connect-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: producer
+  namespace: confluent
+spec:
+  commonName: producer
+  issuerRef:
+    name: bootcamp-issuer
+    kind: ClusterIssuer
+  secretName: producer-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: consumer
+  namespace: confluent
+spec:
+  commonName: consumer
+  issuerRef:
+    name: bootcamp-issuer
+    kind: ClusterIssuer
+  secretName: consumer-tls
   privateKey:
     rotationPolicy: Always
     algorithm: RSA

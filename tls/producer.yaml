@@ -20,6 +20,9 @@ data:
     security.protocol=SSL
     ssl.truststore.type=PEM
     ssl.truststore.location=/etc/ssl/certs/ca.crt
+    ssl.keystore.type=PEM
+    ssl.keystore.location=/etc/ssl/client-keys/tls-keypair.pem
+    ssl.key.password=changeme
 ---
 apiVersion: v1
 kind: Service
@@ -49,6 +52,21 @@ spec:
       labels:
         app: kafka-client
     spec:
+      initContainers:
+        - name: convert-pkcs1-to-pkcs8
+          image: alpine/openssl
+          command:
+            - sh
+            - -c
+            - |
+              openssl pkcs8 -topk8 -inform PEM -outform pem -in /etc/ssl/client-certs/tls.key -outform pem -out /config/tls-pkcs8.key -passout pass:changeme
+              cat /config/tls-pkcs8.key /etc/ssl/client-certs/tls.crt > /config/tls-keypair.pem
+              chmod 644 /config/tls-pkcs8.key /config/tls-keypair.pem
+          volumeMounts:
+            - mountPath: /etc/ssl/client-certs
+              name: client-cert-volume
+            - mountPath: /config
+              name: client-key-volume
       containers:
         - name: kafka-client
           image: confluentinc/cp-kafka:latest
@@ -59,6 +77,12 @@ spec:
             - name: config-volume
               mountPath: /etc/kafka-client/config/client-config.properties
               subPath: client-config.properties
+              readOnly: true
+            - name: client-cert-volume
+              mountPath: /etc/ssl/client-certs
+              readOnly: true
+            - name: client-key-volume
+              mountPath: /etc/ssl/client-keys
               readOnly: true
           command:
             - /bin/sh
@@ -76,7 +100,14 @@ spec:
         - name: config-volume
           configMap:
             name: client-config
+        - name: client-key-volume
+          emptyDir: {}
+        - name: client-cert-volume
+          secret:
+            secretName: producer-tls
+
 
 
 ---
 # Connect to kafka.confluent.svc.cluster.local:9092
+# Test with kafka-topics --list --bootstrap-server kafka.confluent.svc.cluster.local:9092 --command-config client-config.properties
