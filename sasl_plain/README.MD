@@ -1,4 +1,11 @@
-Need to inject the secret using this:
+# SASL_PLAINTEXT/PLAIN example
+
+## Strategy
+
+Inject the username/password into Kubernetes secrets and refer these secrets in the deployment.
+You can either:
+
+Inject the secret using this:
 
     kubectl create secret generic credential \
     --from-file=plain-users.json=./plain-users.json \
@@ -8,7 +15,7 @@ Need to inject the secret using this:
     kubectl create secret generic credential-cp \
     --from-file=plain.txt=./plain-kafka.txt --namespace confluent
 
-Split into separate configuration files for each service
+Alternatively, split the authentication for each service into separate configuration files 
 
     kubectl create secret generic credential \
     --from-file=plain-users.json=./plain-users.json \

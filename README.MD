@@ -1,5 +1,25 @@
 # Preparations
 
+## Deploy kind
+
+If you do not have a Kubernetes cluster but a running Docker environment, you can use [kind][https://kind.sigs.k8s.io/]
+
+Install kind, then create a cluster
+
+    kind create cluster --name cfk --config ../kind-config.yaml
+
+The config file opens a few ports for gateway APIs that might be useful later.
+
+Change the kubectl context
+
+    kubectl config use-context kind-cfk
+
+You should also create a confluent namespace 
+
+    kubectl create namespace confluent
+
+I recommend to install [kubens][https://github.com/ahmetb/kubectx] to set contexts and change namespaces.
+
 ## Deploy Confluent for Kubernetes (CFK)
 
 Set up the Helm Chart:
