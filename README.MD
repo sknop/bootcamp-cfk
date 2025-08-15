@@ -2,7 +2,7 @@
 
 ## Deploy kind
 
-If you do not have a Kubernetes cluster but a running Docker environment, you can use [kind][https://kind.sigs.k8s.io/]
+If you do not have a Kubernetes cluster but a running Docker environment, you can use [kind](https://kind.sigs.k8s.io/)
 
 Install kind, then create a cluster
 
@@ -18,7 +18,7 @@ You should also create a confluent namespace
 
     kubectl create namespace confluent
 
-I recommend to install [kubens][https://github.com/ahmetb/kubectx] to set contexts and change namespaces.
+I recommend to install [kubens](https://github.com/ahmetb/kubectx) to set contexts and change namespaces.
 
 ## Deploy Confluent for Kubernetes (CFK)
 
@@ -38,7 +38,15 @@ Check that the Confluent For Kubernetes pod comes up and is running:
 
 ### PLAINTEXT
 
-Simple PLAINTEXT implementation (no authentication or encryption) without a Gateway or Ingress Controller
+Simple PLAINTEXT implementation (no authentication or encryption) without a Gateway or Ingress Controller.
+Find it here: [plainext](/plaintext).
 
 ### SASL_PLAINTEXT/PLAIN
 
+Simple SASL_PLAINTEXT implementation for PLAIN without TLS.
+Find it here: [sasl_plain](/sasl_plain)
+
+### TLS
+
+TLS implementation with mTLS using the cert-manager.
+Find it here: [tls](/tls)
