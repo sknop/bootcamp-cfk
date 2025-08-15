@@ -38,15 +38,12 @@ Check that the Confluent For Kubernetes pod comes up and is running:
 
 ### PLAINTEXT
 
-Simple PLAINTEXT implementation (no authentication or encryption) without a Gateway or Ingress Controller.
-Find it here: [plainext](/plaintext).
+Simple [PLAINTEXT](/plaintext) implementation (no authentication or encryption) without a Gateway or Ingress Controller.
 
 ### SASL_PLAINTEXT/PLAIN
 
-Simple SASL_PLAINTEXT implementation for PLAIN without TLS.
-Find it here: [sasl_plain](/sasl_plain)
+Simple [SASL_PLAINTEXT/PLAIN](/sasl_plain) implementation for PLAIN without TLS.
 
 ### TLS
 
-TLS implementation with mTLS using the cert-manager.
-Find it here: [tls](/tls)
+[TLS](/tls) implementation with mTLS using the cert-manager.
