@@ -41,7 +41,6 @@ spec:
     - kafka.confluent.svc.cluster.local
     - '*.confluent.svc.cluster.local'
     - '*.kafka.confluent.svc.cluster.local'
-    - '*.kafka.confluent.svc.cluster.local'
   issuerRef:
     kind: ClusterIssuer
     name: bootcamp-issuer
@@ -167,6 +166,28 @@ spec:
     name: bootcamp-issuer
     kind: ClusterIssuer
   secretName: consumer-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: samba-cert
+  namespace: confluent
+spec:
+  commonName: samba
+  dnsNames:
+    - samba
+    - samba.confluent
+    - samba.confluent.svc.cluster.local
+    - '*.confluent.svc.cluster.local'
+    - '*.samba.confluent.svc.cluster.local'
+  issuerRef:
+    kind: ClusterIssuer
+    name: bootcamp-issuer
+  secretName: samba-tls
   privateKey:
     rotationPolicy: Always
     algorithm: RSA
