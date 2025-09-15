@@ -1,0 +1,26 @@
+resources:
+  - ../base
+
+images:
+  - name: confluentinc/confluent-init-container
+    newTag: 3.0.0
+  - name: confluentinc/cp-server
+    newTag: 8.0.0
+  - name: confluentinc/cp-server-connect
+    newTag: 8.0.0
+  - name: confluentinc/cp-ksqldb-server
+    newTag: 8.0.0
+  - name: confluentinc/cp-schema-registry
+    newTag: 8.0.0
+  - name: confluentinc/cp-kafka-rest
+    newTag: 8.0.0
+  - name: confluentinc/cp-enterprise-control-center-next-gen
+    newTag: 2.2.0
+  - name: confluentinc/cp-enterprise-prometheus
+    newTag: 2.2.0
+  - name: confluentinc/cp-enterprise-alertmanager
+    newTag: 2.2.0
+
+
+
+

@@ -6,8 +6,8 @@ metadata:
 spec:
   dataVolumeCapacity: 10G
   image:
-    application: docker.io/confluentinc/cp-server:8.0.0
-    init: confluentinc/confluent-init-container:3.0.0
+    application: confluentinc/cp-server:latest
+    init: confluentinc/confluent-init-container:latest
   replicas: 3
   dependencies:
     metricsClient:
@@ -21,8 +21,8 @@ metadata:
 spec:
   replicas: 3
   image:
-    application: confluentinc/cp-server:8.0.0
-    init: confluentinc/confluent-init-container:3.0.0
+    application: confluentinc/cp-server:latest
+    init: confluentinc/confluent-init-container:latest
   dataVolumeCapacity: 100Gi
   dependencies:
     kRaftController:
@@ -39,8 +39,8 @@ metadata:
 spec:
   replicas: 1
   image:
-    application: confluentinc/cp-server-connect:8.0.0
-    init: confluentinc/confluent-init-container:3.0.0
+    application: confluentinc/cp-server-connect:latest
+    init: confluentinc/confluent-init-container:latest
   dependencies:
     kafka:
       bootstrapEndpoint: kafka:9071
@@ -53,8 +53,8 @@ metadata:
 spec:
   replicas: 1
   image:
-    application: confluentinc/cp-ksqldb-server:8.0.0
-    init: confluentinc/confluent-init-container:3.0.0
+    application: confluentinc/cp-ksqldb-server:latest
+    init: confluentinc/confluent-init-container:latest
   dataVolumeCapacity: 10Gi
 ---
 apiVersion: platform.confluent.io/v1beta1
@@ -65,8 +65,8 @@ metadata:
 spec:
   replicas: 1
   image:
-    application: confluentinc/cp-enterprise-control-center-next-gen:2.2.0
-    init: confluentinc/confluent-init-container:3.0.0
+    application: confluentinc/cp-enterprise-control-center-next-gen:latest
+    init: confluentinc/confluent-init-container:latest
   dataVolumeCapacity: 10Gi
   dependencies:
     schemaRegistry:
@@ -85,11 +85,11 @@ spec:
       url: http://controlcenter.confluent.svc.cluster.local:9093
   services:
     prometheus:
-      image: confluentinc/cp-enterprise-prometheus:2.2.0
+      image: confluentinc/cp-enterprise-prometheus:latest
       pvc:
         dataVolumeCapacity: 10Gi
     alertmanager:
-      image: confluentinc/cp-enterprise-alertmanager:2.2.0
+      image: confluentinc/cp-enterprise-alertmanager:latest
 ---
 # Use kubectl port-forward --address 0.0.0.0 controlcenter-0 9021:9021
 ---
@@ -101,8 +101,8 @@ metadata:
 spec:
   replicas: 3
   image:
-    application: confluentinc/cp-schema-registry:8.0.0
-    init: confluentinc/confluent-init-container:3.0.0
+    application: confluentinc/cp-schema-registry:latest
+    init: confluentinc/confluent-init-container:latest
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: KafkaRestProxy
@@ -112,8 +112,8 @@ metadata:
 spec:
   replicas: 1
   image:
-    application: confluentinc/cp-kafka-rest:8.0.0
-    init: confluentinc/confluent-init-container:3.0.0
+    application: confluentinc/cp-kafka-rest:latest
+    init: confluentinc/confluent-init-container:latest
   dependencies:
     schemaRegistry:
       url: http://schemaregistry.confluent.svc.cluster.local:8081

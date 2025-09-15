@@ -1,0 +1,5 @@
+resources:
+  - confluent-platform-c3++.yaml
+
+configurations:
+  - image-config.yaml
