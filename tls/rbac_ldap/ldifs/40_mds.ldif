@@ -1,0 +1,7 @@
+dn: CN=mds,OU=Users,OU=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: mds@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: mds
+userAccountControl: 66048
+unicodePwd:: IgBtAGQAcwAtAHMAZQBjAHIAZQB0ACIA

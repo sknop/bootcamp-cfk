@@ -1,0 +1,10 @@
+dn: CN=Greta Thunberg,OU=Users,OU=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: greta@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: greta
+givenName: Greta
+sn: Thunberg
+mail: gthunberg@CONFLUENT.SVC.CLUSTER.LOCAL
+userAccountControl: 66048
+unicodePwd:: IgBnAHIAZQB0AGEALQBzAGUAYwByAGUAdAAiAA==

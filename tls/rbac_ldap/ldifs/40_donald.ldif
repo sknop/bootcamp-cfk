@@ -1,0 +1,10 @@
+dn: CN=Donald Duck,OU=Users,OU=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: donald@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: donald
+givenName: Donald
+sn: Duck
+mail: dduck@CONFLUENT.SVC.CLUSTER.LOCAL
+userAccountControl: 66048
+unicodePwd:: IgBkAG8AbgBhAGwAZAAtAHMAZQBjAHIAZQB0ACIA

@@ -1,0 +1,10 @@
+dn: CN=Eva Maria,OU=Users,OU=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: eva@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: eva
+givenName: Eva
+sn: Maria
+mail: emaria@CONFLUENT.SVC.CLUSTER.LOCAL
+userAccountControl: 66048
+unicodePwd:: IgBlAHYAYQAtAHMAZQBjAHIAZQB0ACIA

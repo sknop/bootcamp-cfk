@@ -1,0 +1,20 @@
+---
+services:
+  samba:
+    build: .
+    image: sknop/bootcamp-samba
+    hostname: samba.confluent.svc.cluster.local
+    container_name: samba
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - ./tls:/import/tls
+      - ./ldifs:/import/ldifs
+    ports:
+      - 636:636
+    post_start:
+      - command: ["/bin/bash", "-c", "/add_ldifs.sh /import/ldifs"]
+    pre_stop:
+      - command: echo "Shutting down samba".
+
+

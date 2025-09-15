@@ -1,0 +1,150 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: KRaftController
+metadata:
+  name: kraftcontroller
+  namespace: confluent
+spec:
+  dataVolumeCapacity: 10G
+  image:
+    application: docker.io/confluentinc/cp-server:8.0.0
+    init: confluentinc/confluent-init-container:3.0.0
+  replicas: 3
+  dependencies:
+    metricsClient:
+      url: http://controlcenter.confluent.svc.cluster.local:9090
+  tls:
+    secretRef: kraft-tls
+  listeners:
+    controller:
+      tls:
+        enabled: true
+      authentication:
+        type: mtls
+        principalMappingRules:
+          - RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Kafka
+metadata:
+  name: kafka
+  namespace: confluent
+spec:
+  replicas: 3
+  image:
+    application: confluentinc/cp-server:8.0.0
+    init: confluentinc/confluent-init-container:3.0.0
+  dataVolumeCapacity: 100Gi
+  dependencies:
+    kRaftController:
+      clusterRef:
+        name: kraftcontroller
+      controllerListener:
+        tls:
+          enabled: true
+        authentication:
+          type: mtls
+    metricsClient:
+      url: http://controlcenter.confluent.svc.cluster.local:9090
+  tls:
+    secretRef: kafka-tls
+  listeners:
+    internal:
+      tls:
+        enabled: true
+      authentication:
+        type: mtls
+        principalMappingRules:
+          - RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/
+    external:
+      tls:
+        enabled: true
+      authentication:
+        type: mtls
+        principalMappingRules:
+          - RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Connect
+metadata:
+  name: connect
+  namespace: confluent
+spec:
+  replicas: 1
+  image:
+    application: confluentinc/cp-server-connect:8.0.0
+    init: confluentinc/confluent-init-container:3.0.0
+  tls:
+    secretRef: connect-tls
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: KsqlDB
+metadata:
+  name: ksqldb
+  namespace: confluent
+spec:
+  replicas: 1
+  image:
+    application: confluentinc/cp-ksqldb-server:8.0.0
+    init: confluentinc/confluent-init-container:3.0.0
+  dataVolumeCapacity: 10Gi
+  tls:
+    secretRef: ksqldb-tls
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: ControlCenter
+metadata:
+  name: controlcenter
+  namespace: confluent
+spec:
+  replicas: 1
+  image:
+    application: confluentinc/cp-enterprise-control-center-next-gen:2.2.0
+    init: confluentinc/confluent-init-container:3.0.0
+  dataVolumeCapacity: 10Gi
+#  configOverrides:
+#    server:
+#      - confluent.controlcenter.cmf.url="https://cmf-service.confluent.svc.cluster.local"
+#      - confluent.controlcenter.cmf.enable=true
+  dependencies:
+    schemaRegistry:
+      url: https://schemaregistry.confluent.svc.cluster.local:8081
+      tls:
+        enabled: true
+    ksqldb:
+    - name: ksqldb
+      url: https://ksqldb.confluent.svc.cluster.local:8088
+      tls:
+        enabled: true
+    connect:
+    - name: connect
+      url: https://connect.confluent.svc.cluster.local:8083
+      tls:
+        enabled: true
+    prometheusClient:
+      url: http://controlcenter.confluent.svc.cluster.local:9090
+    alertManagerClient:
+      url: http://controlcenter.confluent.svc.cluster.local:9093
+  services:
+    prometheus:
+      image: confluentinc/cp-enterprise-prometheus:2.2.0
+      pvc:
+        dataVolumeCapacity: 10Gi
+    alertmanager:
+      image: confluentinc/cp-enterprise-alertmanager:2.2.0
+  tls:
+    secretRef: controlcenter-tls
+---
+# Use kubectl port-forward --address 0.0.0.0 controlcenter-0 9021:9021
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: SchemaRegistry
+metadata:
+  name: schemaregistry
+  namespace: confluent
+spec:
+  replicas: 3
+  image:
+    application: confluentinc/cp-schema-registry:8.0.0
+    init: confluentinc/confluent-init-container:3.0.0
+  tls:
+    secretRef: schemaregistry-tls

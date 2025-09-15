@@ -1,0 +1,117 @@
+# Reminder:
+# issuerRef kind is either Issuer or ClusterIssuer
+# They are almost identical, but Issuer is restricted to a Namespace, while the ClusterIssuer can span Namespaces
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-issuer
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: my-selfsigned-ca
+  # Create CA root secret in `confluent` namespace.
+  namespace: confluent
+spec:
+  isCA: true
+  commonName: my-selfsigned-ca
+  secretName: root-secret
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: bootcamp-issuer
+spec:
+  ca:
+    # `ClusterIssuer` resource is not namespaced, so `secretName` is assumed to reference secret in `confluent` namespace.
+    secretName: root-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: samba-cert
+  namespace: confluent
+spec:
+  commonName: samba
+  dnsNames:
+    - samba
+    - samba.confluent
+    - samba.confluent.svc.cluster.local
+    - '*.confluent.svc.cluster.local'
+    - '*.samba.confluent.svc.cluster.local'
+  issuerRef:
+    kind: ClusterIssuer
+    name: bootcamp-issuer
+  secretName: samba-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
+---
+# Samba definitions
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: samba
+  labels:
+    app: samba
+spec:
+  clusterIP: None
+  selector:
+    app: samba
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: samba
+  namespace: confluent
+spec:
+  serviceName: samba
+  podManagementPolicy: Parallel
+  replicas: 1
+  selector:
+    matchLabels:
+      app: samba
+  template:
+    metadata:
+      labels:
+        app: samba
+    spec:
+      containers:
+        - name: samba
+          image: sknop/bootcamp-samba
+          securityContext:
+            capabilities:
+              add: [ "SYS_ADMIN" ]
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/bash", "-c", "/add_ldifs.sh /import/ldifs"]
+          volumeMounts:
+            - mountPath: /import/tls
+              name: tls-volume
+            - mountPath: /import/ldifs
+              name: ldifs-volume
+#      resources:
+#        requests:
+#          memory: 512Mi
+#          cpu: 500m
+      volumes:
+        - name: tls-volume
+          secret:
+            secretName: samba-tls
+        - name: ldifs-volume
+          configMap:
+            name: ldifs
+

@@ -1,0 +1,4 @@
+dn: CN=Developers,OU=Groups,OU=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+changetype: modify
+add: member
+member: CN=Alice LookingGlass,OU=Users,OU=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local

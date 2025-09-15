@@ -1,0 +1,7 @@
+dn: CN=Superuser,ou=Users,ou=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: superuser@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: superuser
+userAccountControl: 66048
+unicodePwd:: IgBzAHUAcABlAHIAdQBzAGUAcgAtAHMAZQBjAHIAZQB0ACIA
