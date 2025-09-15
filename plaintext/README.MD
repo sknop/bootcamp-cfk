@@ -4,7 +4,11 @@
 
 Deploy the cluster
 
-    kubectl apply -f confluent-platform-c3++.yaml
+    kubectl apply -k 8.0.0
+
+Note that invoking the confluent-platform-c3++.yaml file does not work. The version
+has been deliberately set to latest, which will not download from the Docker Hub. 
+You need to use Kustomization for the plaintext lab.
 
 Verify the cluster is up and running, I tend to use 
 
@@ -31,7 +35,7 @@ Inside the pod, you can use, for example
 Cleanup
 
     kubectl delete -f producer.yaml
-    kubectl delete -f confluent-platform-c3++.yaml
+    kubectl delete -k 8.0.0
 
 Debugging hints
 
