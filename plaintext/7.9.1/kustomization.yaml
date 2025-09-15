@@ -20,7 +20,3 @@ images:
     newTag: 2.2.0
   - name: confluentinc/cp-enterprise-alertmanager
     newTag: 2.2.0
-
-
-
-
