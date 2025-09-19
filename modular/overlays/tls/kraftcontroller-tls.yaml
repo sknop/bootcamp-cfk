@@ -1,0 +1,16 @@
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: KRaftController
+metadata:
+  name: kraftcontroller
+spec:
+  tls:
+    secretRef: kraft-tls
+  listeners:
+    controller:
+      tls:
+        enabled: true
+      authentication:
+        type: mtls
+        principalMappingRules:
+          - RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/
