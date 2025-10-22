@@ -45,6 +45,9 @@ spec:
           type: mtls
     metricsClient:
       url: http://controlcenter.confluent.svc.cluster.local:9090
+  configOverrides:
+    server:
+      - listener.name.external.plain.sasl.server.callback.handler.class=io.confluent.security.auth.provider.ldap.LdapAuthenticateCallbackHandler
   tls:
     secretRef: kafka-tls
   listeners:
