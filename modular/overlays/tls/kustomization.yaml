@@ -1,5 +1,5 @@
 resources:
-  - ../../base/8.0.0
+  - ../../base/8.1.0
 
 patches:
   - path: kraftcontroller-tls.yaml

@@ -28,6 +28,10 @@ Or
 >
 > This is a better choice than helm install, since it is idempotent and allows for upgrades
 
+## Deploy Flink Operator
+
+    helm upgrade --install cp-flink-kubernetes-operator confluentinc/flink-kubernetes-operator
+
 ## Deploy
 
     kubectl apply -f confluent-platform-c3++.yaml    
