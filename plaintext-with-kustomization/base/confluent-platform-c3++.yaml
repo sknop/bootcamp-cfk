@@ -41,6 +41,15 @@ spec:
   image:
     application: confluentinc/cp-server-connect:latest
     init: confluentinc/confluent-init-container:latest
+  build:
+    type: onDemand
+    onDemand:
+      plugins:
+        locationType: confluentHub
+        confluentHub:
+          - name: kafka-connect-datagen
+            owner: confluentinc
+            version: 0.6.8
   dependencies:
     kafka:
       bootstrapEndpoint: kafka:9071
