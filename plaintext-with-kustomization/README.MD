@@ -4,7 +4,7 @@
 
 Deploy the cluster
 
-    kubectl apply -k 8.0.0
+    kubectl apply -k 8.1.1
 
 Note that invoking the confluent-platform-c3++.yaml file does not work. The version
 has been deliberately set to latest, which will not download from the Docker Hub. 
