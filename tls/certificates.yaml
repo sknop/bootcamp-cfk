@@ -192,3 +192,25 @@ spec:
     rotationPolicy: Always
     algorithm: RSA
     size: 2048
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cmf-cert
+  namespace: confluent
+spec:
+  commonName: cmf-service
+  dnsNames:
+    - cmf-service
+    - cmf-service.confluent
+    - cmf-service.confluent.svc.cluster.local
+    - '*.confluent.svc.cluster.local'
+    - '*.cmf-service.confluent.svc.cluster.local'
+  issuerRef:
+    kind: ClusterIssuer
+    name: bootcamp-issuer
+  secretName: cmf-tls
+  privateKey:
+    rotationPolicy: Always
+    algorithm: RSA
+    size: 2048
