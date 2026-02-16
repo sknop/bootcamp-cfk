@@ -6,7 +6,7 @@ https://artifacthub.io/packages/helm/cert-manager/cert-manager
 
 Either
 
-    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.18.2/cert-manager.crds.yaml
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.crds.yaml
 
 Or
 
@@ -14,14 +14,20 @@ Or
     helm repo add jetstack https://charts.jetstack.io --force-update
 
     ## Install the cert-manager helm chart
-    helm install cert-manager --namespace confluent --version v1.18.2 jetstack/cert-manager
+    helm install cert-manager --namespace confluent --version v1.19.2 jetstack/cert-manager
 
 Or
 
     helm upgrade --install cert-manager jetstack/cert-manager \
     --namespace confluent \
-    --version v1.18.2 \
+    --version v1.19.2 \
     --set crds.enabled=true
+
+    helm upgrade --install cert-manager jetstack/cert-manager \
+    --namespace cert-manager \
+    --version v1.19.2 \
+    --set crds.enabled=true
+    --create-namespace
 
 > [!TIP] 
 > helm upgrade --install
@@ -38,5 +44,5 @@ Or
 
 ## Cleanup
 
-    kubectl delete -f    
+    kubectl delete -f confluent-platform-c3++.yaml
     kubectl delete secret connect-tls controlcenter-tls kafka-tls kraft-tls ksqldb-tls schemaregistry-tls
