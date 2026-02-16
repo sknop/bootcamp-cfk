@@ -6,7 +6,7 @@ If you do not have a Kubernetes cluster but a running Docker environment, you ca
 
 Install kind, then create a cluster
 
-    kind create cluster --name cfk --config ../kind-config.yaml
+    kind create cluster --name cfk --config kind-config.yaml
 
 The config file opens a few ports for gateway APIs that might be useful later.
 
@@ -25,6 +25,10 @@ I recommend to install [kubens](https://github.com/ahmetb/kubectx) to set contex
 Set up the Helm Chart:
 
     helm repo add confluentinc https://packages.confluent.io/helm
+
+Optional: Add licensing
+
+    kubectl create secret generic confluent-operator-licensing --from-file=license.txt=license.txt
 
 Install Confluent For Kubernetes using Helm:
 
