@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+patches:
+  - target:
+      kind: ControlCenter
+      name: controlcenter
+    patch: |-
+      - op: add
+        path: /spec/configOverrides
+        value:
+          server:
+             - confluent.controlcenter.cmf.enable=true
+             - confluent.controlcenter.cmf.url=http://cmf-service.confluent.svc.cluster.local:80

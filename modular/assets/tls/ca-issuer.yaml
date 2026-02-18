@@ -14,7 +14,7 @@ kind: Certificate
 metadata:
   name: my-selfsigned-ca
   # Create CA root secret in `confluent` namespace.
-  namespace: confluent
+  namespace: cert-manager
 spec:
   isCA: true
   commonName: my-selfsigned-ca

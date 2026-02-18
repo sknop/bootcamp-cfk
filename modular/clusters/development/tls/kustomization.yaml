@@ -6,6 +6,7 @@ resources:
 
 components:
   - ../../../components/tls
+  - ../../../components/cmf
 
 images:
   - name: confluentinc/confluent-init-container
