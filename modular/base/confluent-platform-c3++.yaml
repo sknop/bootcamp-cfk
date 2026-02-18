@@ -12,8 +12,6 @@ spec:
   dependencies:
     metricsClient:
       url: http://controlcenter.confluent.svc.cluster.local:9090
-  license:
-    globalLicense: true
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: Kafka
@@ -32,8 +30,6 @@ spec:
         name: kraftcontroller
     metricsClient:
       url: http://controlcenter.confluent.svc.cluster.local:9090
-  license:
-    globalLicense: true
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: SchemaRegistry
@@ -45,8 +41,6 @@ spec:
   image:
     application: confluentinc/cp-schema-registry:latest
     init: confluentinc/confluent-init-container:latest
-  license:
-    globalLicense: true
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: Connect
@@ -67,8 +61,6 @@ spec:
           - name: kafka-connect-datagen
             owner: confluentinc
             version: 0.6.8
-  license:
-    globalLicense: true
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: KsqlDB
@@ -81,8 +73,6 @@ spec:
     application: confluentinc/cp-ksqldb-server:latest
     init: confluentinc/confluent-init-container:latest
   dataVolumeCapacity: 10Gi
-  license:
-    globalLicense: true
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: ControlCenter
@@ -115,8 +105,6 @@ spec:
         dataVolumeCapacity: 10Gi
     alertmanager:
       image: confluentinc/cp-enterprise-alertmanager:latest
-  license:
-    globalLicense: true
 ---
 # Use kubectl port-forward --address 0.0.0.0 controlcenter-0 9021:9021
 ---
@@ -133,6 +121,4 @@ spec:
   dependencies:
     schemaRegistry:
       url: http://schemaregistry.confluent.svc.cluster.local:8081
-  license:
-    globalLicense: true
 
