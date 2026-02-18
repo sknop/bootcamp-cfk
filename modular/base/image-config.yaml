@@ -1,0 +1,33 @@
+images:
+  - path: spec/image/application
+    kind: KRaftController
+  - path: spec/image/init
+    kind: KRaftController
+  - path: spec/image/application
+    kind: Kafka
+  - path: spec/image/init
+    kind: Kafka
+  - path: spec/image/application
+    kind: Connect
+  - path: spec/image/init
+    kind: Connect
+  - path: spec/image/application
+    kind: KsqlDB
+  - path: spec/image/init
+    kind: KsqlDB
+  - path: spec/image/application
+    kind: ControlCenter
+  - path: spec/image/init
+    kind: ControlCenter
+  - path: spec/image/application
+    kind: SchemaRegistry
+  - path: spec/image/init
+    kind: SchemaRegistry
+  - path: spec/image/application
+    kind: KafkaRestProxy
+  - path: spec/image/init
+    kind: KafkaRestProxy
+  - path: spec/services/prometheus/image
+    kind: ControlCenter
+  - path: spec/services/alertmanager/image
+    kind: ControlCenter

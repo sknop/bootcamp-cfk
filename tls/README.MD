@@ -19,14 +19,9 @@ Or
 Or
 
     helm upgrade --install cert-manager jetstack/cert-manager \
-    --namespace confluent \
-    --version v1.19.2 \
-    --set crds.enabled=true
-
-    helm upgrade --install cert-manager jetstack/cert-manager \
     --namespace cert-manager \
     --version v1.19.2 \
-    --set crds.enabled=true
+    --set crds.enabled=true \
     --create-namespace
 
 > [!TIP] 
