@@ -2,3 +2,4 @@ confluent-for-kubernetes/
 .idea/
 *.iml
 /license.txt
+/confluent-license.yaml
