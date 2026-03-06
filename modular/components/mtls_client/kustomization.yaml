@@ -1,0 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+patches:
+  - target:
+      kind: ControlCenter
+      name: controlcenter
+    patch: |-
+      - op: add
+        path: /spec/dependencies/kafka/authentication
+        value: 
+          type: mtls 
+
+  - target:
+      kind: SchemaRegistry
+      name: schemaregistry
+    patch: |-
+      - op: add
+        path: /spec/dependencies/kafka/authentication
+        value:
+            type: mtls
+
+  - target:
+      kind: Connect
+      name: connect
+    patch: |-
+      - op: add
+        path: /spec/dependencies/kafka/authentication
+        value:
+            type: mtls
+
+  - target:
+      kind: KsqlDB
+      name: ksqldb
+    patch: |-
+      - op: add
+        path: /spec/dependencies/kafka/authentication
+        value:
+            type: mtls
+
+  - target:
+      kind: KafkaRestProxy
+      name: kafkarestproxy
+    patch: |-
+      - op: add
+        path: /spec/dependencies/kafka/authentication
+        value:
+            type: mtls 
+

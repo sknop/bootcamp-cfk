@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+patches:
+  - target:
+      kind: KRaftController
+      name: kraftcontroller
+    patch: |-
+      - op: add
+        path: /spec/listeners/controller/authentication
+        value:
+            type: mtls
+            principalMappingRules: ["RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/"] 
+
+  - target:
+      kind: Kafka
+      name: kafka
+    patch: |-
+      - op: add
+        path: /spec/listeners/internal/authentication
+        value:
+          type: mtls
+          principalMappingRules: ["RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/"]
+      - op: add
+        path: /spec/listeners/external/authentication
+        value:
+          type: mtls
+          principalMappingRules: ["RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/"]
+      - op: add
+        path: /spec/dependencies/kRaftController/controllerListener/authentication
+        value: 
+          type: mtls
+

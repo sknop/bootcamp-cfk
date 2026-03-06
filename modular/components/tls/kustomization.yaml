@@ -13,6 +13,7 @@ patches:
         value:
           controller:
             tls: { enabled: true }
+
   - target:
       kind: Kafka
       name: kafka
