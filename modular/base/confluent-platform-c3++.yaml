@@ -41,6 +41,9 @@ spec:
   image:
     application: confluentinc/cp-schema-registry:latest
     init: confluentinc/confluent-init-container:latest
+  dependencies:
+    kafka:
+      bootstrapEndpoint: kafka:9071
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: Connect
@@ -61,6 +64,9 @@ spec:
           - name: kafka-connect-datagen
             owner: confluentinc
             version: 0.6.8
+  dependencies:
+    kafka:
+      bootstrapEndpoint: kafka:9071
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: KsqlDB
@@ -73,6 +79,9 @@ spec:
     application: confluentinc/cp-ksqldb-server:latest
     init: confluentinc/confluent-init-container:latest
   dataVolumeCapacity: 10Gi
+  dependencies:
+    kafka:
+      bootstrapEndpoint: kafka:9071
 ---
 apiVersion: platform.confluent.io/v1beta1
 kind: ControlCenter
@@ -98,6 +107,8 @@ spec:
       url: http://controlcenter.confluent.svc.cluster.local:9090
     alertManagerClient:
       url: http://controlcenter.confluent.svc.cluster.local:9093
+    kafka:
+      bootstrapEndpoint: kafka:9071
   services:
     prometheus:
       image: confluentinc/cp-enterprise-prometheus:latest
@@ -121,4 +132,6 @@ spec:
   dependencies:
     schemaRegistry:
       url: http://schemaregistry.confluent.svc.cluster.local:8081
+    kafka:
+      bootstrapEndpoint: kafka:9071
 

@@ -13,8 +13,6 @@ patches:
         value:
           controller:
             tls: { enabled: true }
-            authentication: { type: mtls, principalMappingRules: ["RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/"] }
-
   - target:
       kind: Kafka
       name: kafka
@@ -27,13 +25,11 @@ patches:
         value:
           internal:
             tls: { enabled: true }
-            authentication: { type: mtls, principalMappingRules: ["RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/"] }
           external:
             tls: { enabled: true }
-            authentication: { type: mtls, principalMappingRules: ["RULE:.*CN[\\s]?=[\\s]?([a-zA-Z0-9.]*)?.*/$1/"] }
       - op: add
         path: /spec/dependencies/kRaftController/controllerListener
-        value: { tls: { enabled: true }, authentication: { type: mtls } }
+        value: { tls: { enabled: true } }
 
   - target:
       kind: ControlCenter
@@ -42,6 +38,9 @@ patches:
       - op: add
         path: /spec/tls
         value: { secretRef: controlcenter-tls }
+      - op: add
+        path: /spec/dependencies/kafka/tls
+        value: { enabled: true }
       - op: replace
         path: /spec/dependencies/schemaRegistry/url
         value: "https://schemaregistry.confluent.svc.cluster.local:8081"
@@ -68,6 +67,9 @@ patches:
       - op: add
         path: /spec/tls
         value: { secretRef: schemaregistry-tls }
+      - op: add
+        path: /spec/dependencies/kafka/tls
+        value: { enabled: true }
 
   - target:
       kind: Connect
@@ -76,6 +78,9 @@ patches:
       - op: add
         path: /spec/tls
         value: { secretRef: connect-tls }
+      - op: add
+        path: /spec/dependencies/kafka/tls
+        value: { enabled: true }
 
   - target:
       kind: KsqlDB
@@ -84,6 +89,9 @@ patches:
       - op: add
         path: /spec/tls
         value: { secretRef: ksqldb-tls }
+      - op: add
+        path: /spec/dependencies/kafka/tls
+        value: { enabled: true }
 
   - target:
       kind: KafkaRestProxy
@@ -92,4 +100,7 @@ patches:
       - op: add
         path: /spec/tls
         value: { secretRef: kafkarestproxy-tls }
+      - op: add
+        path: /spec/dependencies/kafka/tls
+        value: { enabled: true }
 
