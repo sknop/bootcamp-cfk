@@ -21,6 +21,7 @@ Alternatively, split the authentication for each service into separate configura
     kubectl create secret generic credential \
     --from-file=plain-users.json=./plain-users.json \
     --from-file=plain-interbroker.txt=./plain-kafka.txt \
+    --from-file=kafka-server-listener-internal-plain-metrics.txt=./plain-kafka.txt \
     --from-file=plain.txt=./plain-kafka.txt \
     --namespace confluent
 

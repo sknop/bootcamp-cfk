@@ -1,0 +1,100 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+patches:
+  - target:
+      kind: KRaftController
+      name: kraftcontroller
+    patch: |-
+      # Update the controller listener to SASL
+      - op: replace
+        path: /spec/listeners/controller/authentication
+        value:
+          type: plain
+          jaasConfig:
+            secretRef: credential
+
+  - target:
+      kind: Kafka
+      name: kafka
+    patch: |-
+      # Update Internal Listener
+      - op: replace
+        path: /spec/listeners/internal/authentication
+        value:
+          type: plain
+          jaasConfig:
+            secretRef: credential
+      # Update External Listener
+      - op: replace
+        path: /spec/listeners/external/authentication
+        value:
+          type: plain
+          jaasConfig:
+            secretRef: credential
+      # Update KRaft Controller dependency auth
+      - op: replace
+        path: /spec/dependencies/kRaftController/controllerListener/authentication
+        value:
+          type: plain
+          jaasConfig:
+            secretRef: credential
+
+  - target:
+      kind: SchemaRegistry
+      name: schemaregistry
+    patch: |-
+      # Update authentication to Kafka using SASL
+      - op: add
+        path: /spec/dependencies/kafka/authentication
+        value:
+          type: plain
+          jaasConfig:
+            secretRef: credential-cp
+
+  - target:
+      kind: Connect
+      name: connect
+    patch: |-
+      # Update authentication to Kafka using SASL
+      - op: add
+        path: /spec/dependencies/kafka/authentication
+        value:
+          type: plain
+          jaasConfig:
+            secretRef: credential-cp
+
+  - target:
+      kind: KsqlDB
+      name: ksqldb
+    patch: |-
+      # Update authentication to Kafka using SASL
+      - op: add
+        path: /spec/dependencies/kafka/authentication
+        value:
+          type: plain
+          jaasConfig:
+            secretRef: credential-cp
+
+  - target:
+      kind: KafkaRestProxy
+      name: kafkarestproxy
+    patch: |-
+      # Update authentication to Kafka using SASL
+      - op: add
+        path: /spec/dependencies/kafka/authentication
+        value:
+          type: plain
+          jaasConfig:
+            secretRef: credential-cp
+
+  - target:
+      kind: ControlCenter
+      name: controlcenter
+    patch: |-
+      # C3 needs to authenticate to Kafka using SASL
+      - op: add
+        path: /spec/dependencies/kafka/authentication
+        value:
+          type: plain
+          jaasConfig:
+            secretRef: credential-cp
