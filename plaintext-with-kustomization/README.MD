@@ -2,6 +2,8 @@
 
 ## Start here if you never deployed Confluent in Kubernetes before 
 
+Also look at [modular](/modular) directory as well, much cleaner setup
+
 Deploy the cluster
 
     kubectl apply -k 8.1.1
