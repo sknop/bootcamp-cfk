@@ -35,7 +35,7 @@ Inside the pod, you can use, for example
 Cleanup
 
     kubectl delete -f producer.yaml
-    kubectl delete -k 8.0.0
+    kubectl delete -k 8.1.1
 
 Debugging hints
 
