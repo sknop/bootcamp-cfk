@@ -1,3 +1,19 @@
+#apiVersion: kustomize.config.k8s.io/v1alpha1
+#kind: Component
+#patches:
+#  - target:
+#      kind: Kafka
+#      name: kafka
+#    patch: |-
+#      - op: add
+#        path: /spec/listeners
+#        value:
+#          external:
+#            externalAccess:
+#              type: loadBalancer
+#              loadBalancer:
+#                domain: bootcamp.confluent.io
+
 apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 patches:
@@ -5,9 +21,12 @@ patches:
       kind: Kafka
       name: kafka
     patch: |-
-      - op: add
-        path: /spec/listeners
-        value: 
+      apiVersion: platform.confluent.io/v1beta1
+      kind: Kafka
+      metadata:
+        name: kafka
+      spec:
+        listeners:
           external:
             externalAccess:
               type: loadBalancer
