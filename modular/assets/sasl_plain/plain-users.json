@@ -1,0 +1,12 @@
+{
+  "kafka": "kafka-secret",
+  "alice": "alice-secret",
+  "charlie": "charlie-secret",
+  "connect": "connect-secret",
+  "schema-registry": "schema-registry-secret",
+  "ksqldb": "ksqldb-secret",
+  "rest-proxy": "rest-proxy-secret",
+  "control-center": "control-center-secret",
+  "producer": "producer-secret",
+  "consumer": "consumer-secret"
+}
