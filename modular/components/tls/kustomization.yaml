@@ -65,24 +65,36 @@ patches:
       kind: SchemaRegistry
       name: schemaregistry
     patch: |-
-      - op: add
-        path: /spec/tls
-        value: { secretRef: schemaregistry-tls }
-      - op: add
-        path: /spec/dependencies/kafka/tls
-        value: { enabled: true }
-
+      apiVersion: platform.confluent.io/v1beta1
+      kind: SchemaRegistry
+      metadata:
+        name: schemaregistry
+      spec:
+          # Secure the SR web server itself
+          tls:
+            secretRef: schemaregistry-tls
+          # Secure the connection TO Kafka
+          dependencies:
+            kafka:
+              tls:
+                enabled: true
   - target:
-      kind: Connect
-      name: connect
+        kind: Connect
+        name: connect
     patch: |-
-      - op: add
-        path: /spec/tls
-        value: { secretRef: connect-tls }
-      - op: add
-        path: /spec/dependencies/kafka/tls
-        value: { enabled: true }
-
+      apiVersion: platform.confluent.io/v1beta1
+      kind: Connect
+      metadata:
+        name: connect
+      spec:
+        # Secure the Connect web server itself
+        tls:
+          secretRef: connect-tls
+        # Secure the connection TO Kafka
+        dependencies:
+          kafka:
+            tls:
+              enabled: true
   - target:
       kind: KsqlDB
       name: ksqldb
