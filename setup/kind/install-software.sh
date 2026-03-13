@@ -25,6 +25,9 @@ tar xvf k9s_linux_amd64.apk
 sudo cp usr/bin/k9s /usr/local/bin
 rm -r usr
 
+# For development, allows us to reroute DNS entries for local services
+sudo apt install dnsmasq
+
 printf "\n*********************************************************************\n"
 printf "\nLog out of your jump host and log back in again to complete the setup\n"
 printf "\n*********************************************************************\n"
