@@ -7,7 +7,7 @@ CONF_FILE="/etc/dnsmasq.d/kind-k8s.conf"
 echo "🔍 Scanning Kubernetes for LoadBalancers with external-dns annotations in namespace: $NAMESPACE..."
 
 # Clear out the old configurations
-> "$CONF_FILE"
+cat /dev/null > "$CONF_FILE"
 
 # Extract the hostname from the annotation and the IP from the load balancer status
 kubectl get svc -n "$NAMESPACE" -o json | jq -r '
