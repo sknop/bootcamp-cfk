@@ -45,4 +45,43 @@ patches:
             type: loadBalancer
             loadBalancer:
               domain: bootcamp.confluent.io
+  - target:
+      kind: KsqlDB
+      name: ksqldb
+    patch: |-
+      apiVersion: platform.confluent.io/v1beta1
+      kind: KsqlDB
+      metadata:
+        name: ksqldb
+      spec:
+        externalAccess:
+          type: loadBalancer
+          loadBalancer:
+            domain: bootcamp.confluent.io
+  - target:
+      kind: KafkaRestProxy
+      name: kafkarestproxy
+    patch: |-
+      apiVersion: platform.confluent.io/v1beta1
+      kind: KafkaRestProxy
+      metadata:
+        name: kafkarestproxy
+      spec:
+        externalAccess:
+          type: loadBalancer
+          loadBalancer:
+            domain: bootcamp.confluent.io
+  - target:
+      kind: ControlCenter
+      name: controlcenter
+    patch: |-
+      apiVersion: platform.confluent.io/v1beta1
+      kind: ControlCenter
+      metadata:
+        name: controlcenter
+      spec:
+        externalAccess:
+          type: loadBalancer
+          loadBalancer:
+            domain: bootcamp.confluent.io
 
