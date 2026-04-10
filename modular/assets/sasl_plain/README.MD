@@ -33,3 +33,8 @@ Alternatively, split the authentication for each service into separate configura
     --from-file=controlcenter-client-plain.txt=./plain-control-center.txt \
     --namespace confluent
 
+**Or even better:**
+
+    kubectl apply -k .
+
+There is a new kustomization file that simplifies generation of the secrets.
