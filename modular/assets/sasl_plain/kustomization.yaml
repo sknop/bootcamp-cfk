@@ -1,0 +1,27 @@
+# kustomization.yaml
+generatorOptions:
+  # This stops Kustomize from appending random hashes to the secret names,
+  # ensuring CFK can find 'credential' and 'credential-cp'
+  disableNameSuffixHash: true
+
+secretGenerator:
+  # 1. The Core Kafka Credentials
+  - name: credential
+    namespace: confluent
+    type: Opaque
+    files:
+      - plain-users.json=./plain-users.json
+      - plain-interbroker.txt=./plain-kafka.txt
+      - kafka-server-listener-internal-plain-metrics.txt=./plain-kafka.txt
+      - plain.txt=./plain-kafka.txt
+
+  # 2. The Component (CP) Credentials
+  - name: credential-cp
+    namespace: confluent
+    type: Opaque
+    files:
+      - connect-client-plain.txt=./plain-connect.txt
+      - schemaregistry-client-plain.txt=./plain-schema-registry.txt
+      - ksqldb-client-plain.txt=./plain-ksqldb.txt
+      - kafkarestproxy-client-plain.txt=./plain-rest-proxy.txt
+      - controlcenter-client-plain.txt=./plain-control-center.txt
