@@ -1,0 +1,10 @@
+dn: CN=Hans Zimmer,OU=Users,OU=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: hans@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: hans
+givenName: Hans
+sn: Zimmer
+mail: hzimmer@CONFLUENT.SVC.CLUSTER.LOCAL
+userAccountControl: 66048
+unicodePwd:: IgBoAGEAbgBzAC0AcwBlAGMAcgBlAHQAIgA=

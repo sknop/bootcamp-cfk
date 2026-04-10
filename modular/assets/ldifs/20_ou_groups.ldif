@@ -1,0 +1,3 @@
+dn: ou=Groups,ou=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: organizationalUnit
+ou: Groups

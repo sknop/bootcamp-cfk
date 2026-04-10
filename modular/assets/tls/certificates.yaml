@@ -41,6 +41,7 @@ spec:
     - kafka.confluent.svc.cluster.local
     - '*.confluent.svc.cluster.local'
     - '*.kafka.confluent.svc.cluster.local'
+    - kafka.bootcamp.confluent.io
   issuerRef:
     kind: ClusterIssuer
     name: bootcamp-issuer
@@ -63,6 +64,7 @@ spec:
     - controlcenter.confluent.svc.cluster.local
     - '*.confluent.svc.cluster.local'
     - '*.controlcenter.confluent.svc.cluster.local'
+    - controlcenter.bootcamp.confluent.io
     - docker
   issuerRef:
     kind: ClusterIssuer
@@ -86,6 +88,7 @@ spec:
     - ksqldb.confluent.svc.cluster.local
     - '*.confluent.svc.cluster.local'
     - '*.ksqldb.confluent.svc.cluster.local'
+    - ksqldb.bootcamp.confluent.io
   issuerRef:
     kind: ClusterIssuer
     name: bootcamp-issuer
@@ -108,6 +111,7 @@ spec:
     - schemaregistry.confluent.svc.cluster.local
     - '*.confluent.svc.cluster.local'
     - '*.schemaregistry.confluent.svc.cluster.local'
+    - schemaregistry.bootcamp.confluent.io
   issuerRef:
     kind: ClusterIssuer
     name: bootcamp-issuer
@@ -130,6 +134,7 @@ spec:
     - connect.confluent.svc.cluster.local
     - '*.confluent.svc.cluster.local'
     - '*.connect.confluent.svc.cluster.local'
+    - connect.bootcamp.confluent.io
   issuerRef:
     kind: ClusterIssuer
     name: bootcamp-issuer
@@ -152,6 +157,7 @@ spec:
     - kafkarestproxy.confluent.svc.cluster.local
     - '*.confluent.svc.cluster.local'
     - '*.connect.confluent.svc.cluster.local'
+    - kafkarestproxy.bootcamp.confluent.io
   issuerRef:
     kind: ClusterIssuer
     name: bootcamp-issuer
@@ -188,28 +194,6 @@ spec:
     name: bootcamp-issuer
     kind: ClusterIssuer
   secretName: consumer-tls
-  privateKey:
-    rotationPolicy: Always
-    algorithm: RSA
-    size: 2048
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: samba-cert
-  namespace: confluent
-spec:
-  commonName: samba
-  dnsNames:
-    - samba
-    - samba.confluent
-    - samba.confluent.svc.cluster.local
-    - '*.confluent.svc.cluster.local'
-    - '*.samba.confluent.svc.cluster.local'
-  issuerRef:
-    kind: ClusterIssuer
-    name: bootcamp-issuer
-  secretName: samba-tls
   privateKey:
     rotationPolicy: Always
     algorithm: RSA

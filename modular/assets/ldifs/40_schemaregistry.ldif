@@ -1,0 +1,7 @@
+dn: CN=Schema Registry,ou=Users,ou=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: schemaregistry@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: schemaregistry
+userAccountControl: 66048
+unicodePwd:: IgBzAGMAaABlAG0AYQAtAHMAZQBjAHIAZQB0ACIA

@@ -1,0 +1,7 @@
+dn: CN=ksqlDB,ou=Users,ou=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: ksql@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: ksql
+userAccountControl: 66048
+unicodePwd:: IgBrAHMAcQBsAC0AcwBlAGMAcgBlAHQAIgA=

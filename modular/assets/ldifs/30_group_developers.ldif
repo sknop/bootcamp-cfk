@@ -1,0 +1,4 @@
+dn: cn=Developers,ou=Groups,ou=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: group
+cn: Developers
+gidNumber: 5000

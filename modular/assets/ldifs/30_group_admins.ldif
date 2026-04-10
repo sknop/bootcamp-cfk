@@ -1,0 +1,4 @@
+dn: cn=Admins,ou=Groups,ou=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: group
+cn: Admins
+gidNumber: 5000

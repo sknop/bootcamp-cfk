@@ -1,0 +1,4 @@
+dn: cn=Services,ou=Groups,ou=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+changetype: modify
+add: member
+member: CN=Rest Proxy,ou=Users,ou=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local

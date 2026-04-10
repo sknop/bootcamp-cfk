@@ -28,6 +28,12 @@ Or
 >
 > This is a better choice than helm install, since it is idempotent and allows for upgrades
 
+## Create CA
+
+## Create certificates
+
+## Extract CA and certificates to be used outside of Kubernetes
+
 ## Cleanup
 
     kubectl delete -f    

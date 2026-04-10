@@ -1,0 +1,10 @@
+dn: CN=Charlie Sheen,OU=Users,OU=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: charlie@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: charlie
+givenName: Charlie
+sn: Sheen
+mail: csheen@CONFLUENT.SVC.CLUSTER.LOCAL
+userAccountControl: 66048
+unicodePwd:: IgBjAGgAYQByAGwAaQBlAC0AcwBlAGMAcgBlAHQAIgA=

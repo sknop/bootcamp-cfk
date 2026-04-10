@@ -1,0 +1,7 @@
+dn: CN=Control Center,ou=Users,ou=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: controlcenter@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: controlcenter
+userAccountControl: 66048
+unicodePwd:: IgBjADMALQBzAGUAYwByAGUAdAAiAA==

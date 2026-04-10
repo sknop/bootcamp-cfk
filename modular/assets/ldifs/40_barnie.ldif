@@ -1,0 +1,10 @@
+dn: CN=Barnie Rubble,OU=Users,OU=Kafka,dc=confluent,dc=svc,dc=cluster,dc=local
+objectClass: user
+accountExpires: 0
+userPrincipalName: barnie@CONFLUENT.SVC.CLUSTER.LOCAL
+sAMAccountName: barnie
+givenName: Barnie
+sn: Rubble
+mail: brubble@CONFLUENT.SVC.CLUSTER.LOCAL
+userAccountControl: 66048
+unicodePwd:: IgBiAGEAcgB0AC0AcwBlAGMAcgBlAHQAIgA=
