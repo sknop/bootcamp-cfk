@@ -12,7 +12,7 @@ This YAML file already has the required stanza for samba.
 
 The store the ldif files in a config map so that samba can pick them up, for example
 
-    kubectl create configmap ldifs --namespace confluent $(ls *.ldif | awk '{print "--from-file=" $0}')
+    kubectl create configmap ldifs --from-file=./ldifs
 
 Then start up the samba server 
 
