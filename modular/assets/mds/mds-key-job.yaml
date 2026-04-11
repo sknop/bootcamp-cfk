@@ -1,0 +1,72 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mds-key-generator
+  namespace: confluent
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: mds-key-generator-role
+  namespace: confluent
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mds-key-generator-binding
+  namespace: confluent
+subjects:
+  - kind: ServiceAccount
+    name: mds-key-generator
+    namespace: confluent
+roleRef:
+  kind: Role
+  name: mds-key-generator-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: generate-mds-token-keys
+  namespace: confluent
+spec:
+  template:
+    spec:
+      serviceAccountName: mds-key-generator
+      restartPolicy: OnFailure
+      containers:
+        - name: key-generator
+          image: alpine:3.19
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # 1. Install OpenSSL and kubectl
+              apk add --no-cache openssl curl > /dev/null
+              curl -sLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+              chmod +x kubectl
+              
+              # 2. Idempotency Check: Don't overwrite if it already exists
+              if ./kubectl get secret mds-token -n confluent >/dev/null 2>&1; then
+                echo "✅ Secret 'mds-token' already exists. Skipping generation."
+                exit 0
+              fi
+              
+              echo "🔐 Generating RSA Private Key..."
+              openssl genrsa -out /tmp/mdsTokenKeyPair.pem 2048
+              
+              echo "🔑 Extracting RSA Public Key..."
+              openssl rsa -in /tmp/mdsTokenKeyPair.pem -outform PEM -pubout -out /tmp/mdsPublicKey.pem
+              
+              echo "📦 Creating Kubernetes Secret..."
+              ./kubectl create secret generic mds-token \
+                --namespace confluent \
+                --from-file=mdsTokenKeyPair.pem=/tmp/mdsTokenKeyPair.pem \
+                --from-file=mdsPublicKey.pem=/tmp/mdsPublicKey.pem
+              
+              echo "🚀 Done!"
