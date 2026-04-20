@@ -248,10 +248,13 @@ spec:
     mds:
       endpoint: https://kafka.confluent.svc.cluster.local:8090
       authentication:
-        type: bearer
-        bearer:
-          secretRef: rest-credential
+        type: mtls
         sslClientAuthentication: true
+#      authentication:
+#        type: bearer
+#        bearer:
+#          secretRef: rest-credential
+#        sslClientAuthentication: true
       tokenKeyPair:
         secretRef: mds-token
       tls:
@@ -334,9 +337,7 @@ spec:
     mds:
       endpoint: https://kafka.confluent.svc.cluster.local:8090
       authentication:
-        type: bearer
-        bearer:
-          secretRef: rest-credential
+        type: mtls
         sslClientAuthentication: true
       tokenKeyPair:
         secretRef: mds-token
