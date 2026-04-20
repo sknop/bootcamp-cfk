@@ -1,4 +1,4 @@
-# kustomization.yaml
+# confluent-platform-c3++.yaml
 generatorOptions:
   # This stops Kustomize from appending random hashes to the secret names,
   # ensuring CFK can find 'credential' and 'credential-cp'

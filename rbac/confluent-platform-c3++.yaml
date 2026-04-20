@@ -1,0 +1,375 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: KRaftController
+metadata:
+  name: kraftcontroller
+  namespace: confluent
+spec:
+  dataVolumeCapacity: 10G
+  authorization:
+    type: rbac
+    superUsers:
+      - "User:kafka"
+      - "User:kraftcontroller"
+      - "User:mds"
+  dependencies:
+    metricsClient:
+      url: http://controlcenter.confluent.svc.cluster.local:9090
+    mdsKafkaCluster:
+      bootstrapEndpoint: kafka.confluent.svc.cluster.local:9071
+      authentication:
+        type: mtls
+        sslClientAuthentication: true
+      tls:
+        enabled: true
+  image:
+    application: confluentinc/cp-server:8.2.0
+    init: confluentinc/confluent-init-container:3.2.1
+  listeners:
+    controller:
+      authentication:
+        principalMappingRules:
+          - "RULE:.*CN=([a-zA-Z0-9.-]*).*$/$1/"
+          - "DEFAULT"
+        type: mtls
+      tls:
+        enabled: true
+  replicas: 3
+  tls:
+    secretRef: kraft-tls
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Kafka
+metadata:
+  name: kafka
+  namespace: confluent
+spec:
+  authorization:
+    superUsers:
+      - "User:kafka"
+      - "User:kraftcontroller"
+      - "User:mds"
+    type: rbac
+  dataVolumeCapacity: 100Gi
+  configOverrides:
+    server:
+      - ldap.search.mode=USERS
+      - ldap.user.memberof.attribute=memberOf
+      - listener.name.token.ssl.client.auth=none
+  services:
+    mds:
+      tokenKeyPair:
+        secretRef: mds-token
+      tls:
+        enabled: true
+      provider:
+        type: mtls,ldap
+        mtls:
+          principalMappingRules:
+            - "RULE:.*CN=([a-zA-Z0-9.-]*).*$/$1/"
+            - "DEFAULT"
+          sslClientAuthentication: required
+        ldap:
+          address: ldaps://samba.confluent.svc.cluster.local:636
+          authentication:
+            type: simple
+            simple:
+              secretRef: ldap-secret
+          configurations:
+            userNameAttribute: sAMAccountName
+            userMemberOfAttributePattern: CN=(.*),OU=Groups,OU=Kafka,DC=confluent,DC=svc,DC=cluster,DC=local
+            userObjectClass: user
+            userSearchBase: OU=Users,OU=Kafka,DC=confluent,DC=svc,DC=cluster,DC=local
+            userSearchScope: 2
+          tls:
+            enabled: true
+      impersonation:
+        admins:
+          - User:schemaregistry
+          - User:connect
+          - User:kafkarestproxy
+          - User:ksqldb
+          - User:controlcenter
+  dependencies:
+    kRaftController:
+      clusterRef:
+        name: kraftcontroller
+      controllerListener:
+        authentication:
+          type: mtls
+        tls:
+          enabled: true
+    metricsClient:
+      url: http://controlcenter.confluent.svc.cluster.local:9090
+    kafkaRest:
+      authentication:
+        type: mtls
+        sslClientAuthentication: true
+      tls:
+        enabled: true
+        secretRef: kafka-tls
+  image:
+    application: confluentinc/cp-server:8.2.0
+    init: confluentinc/confluent-init-container:3.2.1
+  listeners:
+    external:
+      authentication:
+        principalMappingRules:
+          - "RULE:.*CN=([a-zA-Z0-9.-]*).*$/$1/"
+          - "DEFAULT"
+        type: mtls
+      tls:
+        enabled: true
+    internal:
+      authentication:
+        principalMappingRules:
+          - "RULE:.*CN=([a-zA-Z0-9.-]*).*$/$1/"
+          - "DEFAULT"
+        type: mtls
+      tls:
+        enabled: true
+  replicas: 3
+  tls:
+    secretRef: kafka-tls
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: KafkaRestClass
+metadata:
+  name: default
+  namespace: confluent
+spec:
+  kafkaClusterRef:
+    name: kafka
+  kafkaRest:
+    authentication:
+      type: bearer
+      sslClientAuthentication: true
+      bearer:
+        secretRef: rest-credential
+    tls:
+      secretRef: kafka-tls
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: SchemaRegistry
+metadata:
+  name: schemaregistry
+  namespace: confluent
+spec:
+  dependencies:
+    mds:
+      endpoint: https://kafka.confluent.svc.cluster.local:8090
+      authentication:
+        type: mtls
+        sslClientAuthentication: true
+      tokenKeyPair:
+        secretRef: mds-token
+      tls:
+        enabled: true
+    kafka:
+      authentication:
+        type: mtls
+      bootstrapEndpoint: kafka:9071
+      tls:
+        enabled: true
+  authorization:
+    type: rbac
+  image:
+    application: confluentinc/cp-schema-registry:8.2.0
+    init: confluentinc/confluent-init-container:3.2.1
+  replicas: 3
+  tls:
+    secretRef: schemaregistry-tls
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Connect
+metadata:
+  name: connect
+  namespace: confluent
+spec:
+  build:
+    onDemand:
+      plugins:
+        confluentHub:
+        - name: kafka-connect-datagen
+          owner: confluentinc
+          version: 0.6.8
+        locationType: confluentHub
+    type: onDemand
+  dependencies:
+    mds:
+      endpoint: https://kafka.confluent.svc.cluster.local:8090
+      authentication:
+        type: mtls
+        sslClientAuthentication: true
+      tokenKeyPair:
+        secretRef: mds-token
+      tls:
+        enabled: true
+    kafka:
+      authentication:
+        type: mtls
+      bootstrapEndpoint: kafka:9071
+      tls:
+        enabled: true
+  authorization:
+    type: rbac
+  image:
+    application: confluentinc/cp-server-connect:8.2.0
+    init: confluentinc/confluent-init-container:3.2.1
+  replicas: 1
+  tls:
+    secretRef: connect-tls
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: ControlCenter
+metadata:
+  name: controlcenter
+  namespace: confluent
+spec:
+  configOverrides:
+    server:
+    - confluent.controlcenter.cmf.enable=true
+    - confluent.controlcenter.cmf.url=http://cmf-service.confluent.svc.cluster.local:80
+    # Control Center Streams client to Kafka with RBAC
+#    - confluent.controlcenter.streams.security.protocol=SASL_SSL
+#    - confluent.controlcenter.streams.sasl.mechanism=OAUTHBEARER
+#    - confluent.controlcenter.streams.sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required metadataServerUrls="https://kafka.confluent.svc.cluster.local:8090";
+#    - confluent.controlcenter.streams.sasl.login.callback.handler.class=io.confluent.kafka.clients.plugins.auth.token.TokenCertificateLoginCallbackHandler
+  dataVolumeCapacity: 10Gi
+  authorization:
+    type: rbac
+  dependencies:
+    alertManagerClient:
+      url: http://controlcenter.confluent.svc.cluster.local:9093
+    connect:
+    - name: connect
+      tls:
+        enabled: true
+      url: https://connect.confluent.svc.cluster.local:8083
+    mds:
+      endpoint: https://kafka.confluent.svc.cluster.local:8090
+      authentication:
+        type: bearer
+        bearer:
+          secretRef: rest-credential
+        sslClientAuthentication: true
+      tokenKeyPair:
+        secretRef: mds-token
+      tls:
+        enabled: true
+    kafka:
+      authentication:
+        type: mtls
+      bootstrapEndpoint: kafka:9071
+      tls:
+        enabled: true
+    ksqldb:
+    - name: ksqldb
+      tls:
+        enabled: true
+      url: https://ksqldb.confluent.svc.cluster.local:8088
+    prometheusClient:
+      url: http://controlcenter.confluent.svc.cluster.local:9090
+    schemaRegistry:
+      tls:
+        enabled: true
+      url: https://schemaregistry.confluent.svc.cluster.local:8081
+  image:
+    application: confluentinc/cp-enterprise-control-center-next-gen:2.5.0
+    init: confluentinc/confluent-init-container:3.2.1
+  replicas: 1
+  services:
+    alertmanager:
+      image: confluentinc/cp-enterprise-alertmanager:2.5.0
+    prometheus:
+      image: confluentinc/cp-enterprise-prometheus:2.5.0
+      pvc:
+        dataVolumeCapacity: 10Gi
+  tls:
+    secretRef: controlcenter-tls
+---
+
+apiVersion: platform.confluent.io/v1beta1
+kind: KafkaRestProxy
+metadata:
+  name: kafkarestproxy
+  namespace: confluent
+spec:
+  authorization:
+    type: rbac
+  dependencies:
+    mds:
+      endpoint: https://kafka.confluent.svc.cluster.local:8090
+      authentication:
+        type: mtls
+        sslClientAuthentication: true
+      tokenKeyPair:
+        secretRef: mds-token
+      tls:
+        enabled: true
+    kafka:
+      authentication:
+        type: mtls
+      bootstrapEndpoint: kafka:9071
+      tls:
+        enabled: true
+    schemaRegistry:
+      url: http://schemaregistry.confluent.svc.cluster.local:8081
+  image:
+    application: confluentinc/cp-kafka-rest:8.2.0
+    init: confluentinc/confluent-init-container:3.2.1
+  replicas: 1
+  tls:
+    secretRef: kafkarestproxy-tls
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: KsqlDB
+metadata:
+  name: ksqldb
+  namespace: confluent
+spec:
+  dataVolumeCapacity: 10Gi
+  authorization:
+    type: rbac
+  dependencies:
+    mds:
+      endpoint: https://kafka.confluent.svc.cluster.local:8090
+      authentication:
+        type: bearer
+        bearer:
+          secretRef: rest-credential
+        sslClientAuthentication: true
+      tokenKeyPair:
+        secretRef: mds-token
+      tls:
+        enabled: true
+    kafka:
+      authentication:
+        type: mtls
+      bootstrapEndpoint: kafka:9071
+      tls:
+        enabled: true
+  image:
+    application: confluentinc/cp-ksqldb-server:8.2.0
+    init: confluentinc/confluent-init-container:3.2.1
+  replicas: 1
+  tls:
+    secretRef: ksqldb-tls
+---
+# Add a human user as system admin
+
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: c3-admin-kafka
+  namespace: confluent
+spec:
+  principal:
+    type: user
+    name: alice                # LDAP user principal (CN/uid mapped by MDS)
+  kafkaRestClassRef:
+    name: default
+  resourcePatterns:
+    - name: "*"
+      resourceType: Cluster
+      patternType: LITERAL
+  role: SystemAdmin

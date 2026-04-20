@@ -35,6 +35,8 @@ metadata:
   name: generate-mds-token-keys
   namespace: confluent
 spec:
+  # Clean job up 60 seconds after it completed
+  ttlSecondsAfterFinished: 60
   template:
     spec:
       serviceAccountName: mds-key-generator

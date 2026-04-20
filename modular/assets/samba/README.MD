@@ -21,3 +21,6 @@ Then start up the samba server
 If you look at the `samba.yaml` file, you will see a `postStart` statement that simply pulls 
 the ldif files mapped in from the configmap into the samba server via ldapadd.
 
+Store username and password in a Kubernetes secret for accessing the ldap server
+
+    kubectl create secret generic ldap-secret --from-file=ldap.txt=./ldap.txt
