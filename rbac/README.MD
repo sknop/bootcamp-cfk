@@ -7,6 +7,7 @@ Deploy the mds key from modular/assets/mds
 Then deploy the bearer token in a secret
 
     kubectl create secret generic rest-credential --from-file=bearer.txt=bearer.txt
+    kubectl create secret generic ksql-credential --from-file=basic.txt=bearer.txt
 
 Now you are ready to deploy the whole cluster
 

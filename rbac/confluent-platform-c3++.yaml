@@ -263,7 +263,9 @@ spec:
         enabled: true
       url: https://ksqldb.confluent.svc.cluster.local:8088
       authentication:
-        type: mtls
+        type: basic
+        basic:
+          secretRef: ksql-credential
     schemaRegistry:
       tls:
         enabled: true
@@ -416,20 +418,5 @@ spec:
   kafkaRestClassRef:
     name: default
   role: SystemAdmin
-  clustersScopeByIds:
-    ksqlClusterId: "confluent.ksqldb_"
----
-apiVersion: platform.confluent.io/v1beta1
-kind: ConfluentRolebinding
-metadata:
-  name: c3-machine-ksql-admin
-  namespace: confluent
-spec:
-  principal:
-    type: user
-    name: kafka # 🎯 The user Control Center is polling with
-  kafkaRestClassRef:
-    name: default
-  role: SecurityAdmin
   clustersScopeByIds:
     ksqlClusterId: "confluent.ksqldb_"
