@@ -229,32 +229,17 @@ spec:
     server:
     - confluent.controlcenter.cmf.enable=true
     - confluent.controlcenter.cmf.url=http://cmf-service.confluent.svc.cluster.local:80
-    # Control Center Streams client to Kafka with RBAC
-#    - confluent.controlcenter.streams.security.protocol=SASL_SSL
-#    - confluent.controlcenter.streams.sasl.mechanism=OAUTHBEARER
-#    - confluent.controlcenter.streams.sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required metadataServerUrls="https://kafka.confluent.svc.cluster.local:8090";
-#    - confluent.controlcenter.streams.sasl.login.callback.handler.class=io.confluent.kafka.clients.plugins.auth.token.TokenCertificateLoginCallbackHandler
   dataVolumeCapacity: 10Gi
   authorization:
     type: rbac
   dependencies:
     alertManagerClient:
       url: http://controlcenter.confluent.svc.cluster.local:9093
-    connect:
-    - name: connect
-      tls:
-        enabled: true
-      url: https://connect.confluent.svc.cluster.local:8083
     mds:
       endpoint: https://kafka.confluent.svc.cluster.local:8090
       authentication:
         type: mtls
         sslClientAuthentication: true
-#      authentication:
-#        type: bearer
-#        bearer:
-#          secretRef: rest-credential
-#        sslClientAuthentication: true
       tokenKeyPair:
         secretRef: mds-token
       tls:
@@ -265,17 +250,28 @@ spec:
       bootstrapEndpoint: kafka:9071
       tls:
         enabled: true
+    connect:
+      - name: connect
+        tls:
+          enabled: true
+        url: https://connect.confluent.svc.cluster.local:8083
+        authentication:
+          type: mtls
     ksqldb:
     - name: ksqldb
       tls:
         enabled: true
       url: https://ksqldb.confluent.svc.cluster.local:8088
-    prometheusClient:
-      url: http://controlcenter.confluent.svc.cluster.local:9090
+      authentication:
+        type: mtls
     schemaRegistry:
       tls:
         enabled: true
       url: https://schemaregistry.confluent.svc.cluster.local:8081
+      authentication:
+        type: mtls
+    prometheusClient:
+      url: http://controlcenter.confluent.svc.cluster.local:9090
   image:
     application: confluentinc/cp-enterprise-control-center-next-gen:2.5.0
     init: confluentinc/confluent-init-container:3.2.1
@@ -337,7 +333,9 @@ spec:
     mds:
       endpoint: https://kafka.confluent.svc.cluster.local:8090
       authentication:
-        type: mtls
+        type: bearer
+        bearer:
+          secretRef: rest-credential
         sslClientAuthentication: true
       tokenKeyPair:
         secretRef: mds-token
@@ -369,8 +367,69 @@ spec:
     name: alice                # LDAP user principal (CN/uid mapped by MDS)
   kafkaRestClassRef:
     name: default
-  resourcePatterns:
-    - name: "*"
-      resourceType: Cluster
-      patternType: LITERAL
   role: SystemAdmin
+---
+# 1. Grant Alice SystemAdmin on Schema Registry
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: c3-admin-sr
+  namespace: confluent
+spec:
+  principal:
+    type: user
+    name: alice
+  kafkaRestClassRef:
+    name: default
+  role: SystemAdmin
+  clustersScopeByIds:
+    schemaRegistryClusterId: id_schemaregistry_confluent
+
+---
+# 2. Grant Alice SystemAdmin on Connect
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: c3-admin-connect
+  namespace: confluent
+spec:
+  principal:
+    type: user
+    name: alice
+  kafkaRestClassRef:
+    name: default
+  role: SystemAdmin
+  clustersScopeByIds:
+    connectClusterId: confluent.connect
+
+---
+# 3. Grant Alice SystemAdmin on ksqlDB
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: c3-admin-ksql
+  namespace: confluent
+spec:
+  principal:
+    type: user
+    name: alice
+  kafkaRestClassRef:
+    name: default
+  role: SystemAdmin
+  clustersScopeByIds:
+    ksqlClusterId: "confluent.ksqldb_"
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: c3-machine-ksql-admin
+  namespace: confluent
+spec:
+  principal:
+    type: user
+    name: kafka # 🎯 The user Control Center is polling with
+  kafkaRestClassRef:
+    name: default
+  role: SecurityAdmin
+  clustersScopeByIds:
+    ksqlClusterId: "confluent.ksqldb_"
