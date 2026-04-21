@@ -4,6 +4,9 @@ kind: Kustomization
 resources:
   - ../../../base
 
+components:
+  - ../../../components/cmf
+
 images:
   - name: confluentinc/confluent-init-container
     newTag: 3.2.1
@@ -18,8 +21,8 @@ images:
   - name: confluentinc/cp-kafka-rest
     newTag: 8.2.0
   - name: confluentinc/cp-enterprise-control-center-next-gen
-    newTag: 2.4.1
+    newTag: 2.5.0
   - name: confluentinc/cp-enterprise-prometheus
-    newTag: 2.4.1
+    newTag: 2.5.0
   - name: confluentinc/cp-enterprise-alertmanager
-    newTag: 2.4.1
+    newTag: 2.5.0
